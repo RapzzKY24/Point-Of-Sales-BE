@@ -1,8 +1,8 @@
 # Point of Sales (POS) Backend API
 
-**Point of Sales (POS) Backend** adalah layanan REST API yang dibangun untuk mendukung operasional sistem kasir digital. Backend ini dikembangkan menggunakan **Node.js** dan **Express.js**, dengan **Prisma ORM** sebagai jembatan ke database **PostgreSQL**.
+**Point of Sales (POS) Backend** is a RESTful API service designed to support digital cashier operations. Built with **Node.js** and **Express.js**, it utilizes **Prisma ORM** to interface with a **PostgreSQL** database.
 
-Sistem ini menyediakan fitur manajemen produk, kategori, transaksi pemesanan, serta laporan dashboard ringkas untuk pemilik bisnis. Penyimpanan gambar produk terintegrasi menggunakan layanan **Cloudinary**.
+This system provides comprehensive features for managing products, categories, order transactions, and generating dashboard reports for business owners. It also integrates **Cloudinary** for efficient product image storage.
 
 ## 🛠 Tech Stack
 
@@ -12,25 +12,25 @@ Sistem ini menyediakan fitur manajemen produk, kategori, transaksi pemesanan, se
 * **ORM:** [Prisma](https://www.prisma.io/)
 * **Authentication:** JSON Web Token (JWT)
 * **File Storage:** Cloudinary (via Multer)
-* **Validation:** Joi / Express Validator (implied from middleware)
+* **Validation:** Joi / Express Validator (implied middleware)
 * **Environment:** Dotenv
 
-## 📂 Struktur Database
+## 📂 Database Structure
 
-Skema database didefinisikan menggunakan Prisma dengan model utama sebagai berikut:
+The database schema is defined using Prisma and includes the following key models:
 
-* `User`: Menyimpan data pengguna (kasir/admin) untuk autentikasi.
-* `Category`: Mengelola kategori produk.
-* `Product`: Data barang yang dijual, termasuk stok, harga, dan gambar.
-* `Order`: Mencatat transaksi penjualan (header).
-* `OrderItem`: Rincian item produk dalam setiap transaksi.
+* `User`: Stores user data (cashier/admin) for authentication.
+* `Category`: Manages product categories.
+* `Product`: Contains product details, stock, price, and images.
+* `Order`: Records sales transactions (header information).
+* `OrderItem`: Details individual items within each transaction.
 
-## 🚀 Instalasi & Menjalankan
+## 🚀 Installation & Setup
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal Anda.
+Follow these steps to set up and run the project locally.
 
-### 1. Prasyarat
-Pastikan Anda telah menginstal:
+### 1. Prerequisites
+Ensure you have the following installed:
 * Node.js (v18+)
 * PostgreSQL
 
@@ -41,9 +41,9 @@ cd Point-Of-Sales-BE
 npm install
 ````
 
-### 3\. Konfigurasi Environment (.env)
+### 3\. Environment Configuration (.env)
 
-Buat file `.env` di root folder dan sesuaikan variabel berikut (lihat `src/config/env.js` untuk referensi key yang digunakan):
+Create a `.env` file in the root directory and configure the following variables (refer to `src/config/env.js` for keys):
 
 ```ini
 # Server Configuration
@@ -53,99 +53,99 @@ PORT=4000
 DATABASE_URL="postgresql://user:password@localhost:5432/pos_db?schema=public"
 
 # JWT Secret
-JWT_SECRET=rahasia_super_aman_123
+JWT_SECRET=your_super_secret_key
 
-# Cloudinary Configuration (Untuk upload gambar)
-CLOUDINARY_CLOUD_NAME=nama_cloud_anda
-CLOUDINARY_API_KEY=api_key_anda
-CLOUDINARY_API_SECRET=api_secret_anda
+# Cloudinary Configuration (For image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-### 4\. Migrasi Database
+### 4\. Database Migration
 
-Jalankan migrasi Prisma untuk membuat tabel di database lokal Anda:
+Run Prisma migrations to create the tables in your local database:
 
 ```bash
 npx prisma migrate dev --name init
 ```
 
-*(Opsional)* Anda dapat mengisi data awal (seeding) jika tersedia script seed:
+*(Optional)* You can populate the database with initial data if a seed script is available:
 
 ```bash
 npm run seed
-# atau
+# or
 node prisma/seed.js
 ```
 
-### 5\. Menjalankan Server
+### 5\. Running the Server
 
-  * **Mode Development (Nodemon):**
+  * **Development Mode (Nodemon):**
     ```bash
     npm run dev
     ```
-  * **Mode Production:**
+  * **Production Mode:**
     ```bash
     npm start
     ```
 
-Server akan berjalan di `http://localhost:4000` (atau sesuai PORT di .env).
+The server will start at `http://localhost:4000` (or the PORT specified in your `.env`).
 
 -----
 
-## 📡 Dokumentasi API Endpoint
+## 📡 API Endpoint Documentation
 
-Berikut adalah daftar endpoint yang tersedia berdasarkan struktur router di `src/modules`.
+Below is a list of available endpoints based on the router structure in `src/modules`.
 
 ### 🔐 Authentication
 
-| Method | Endpoint | Deskripsi | Auth |
+| Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/auth/register` | Mendaftarkan user baru | Public |
-| `POST` | `/auth/login` | Login user (mendapatkan Token) | Public |
-| `GET` | `/auth/profile` | Mendapatkan profil user yang login | 🔒 Bearer Token |
+| `POST` | `/auth/register` | Register a new user | Public |
+| `POST` | `/auth/login` | User login (Returns Token) | Public |
+| `GET` | `/auth/profile` | Get current user profile | 🔒 Bearer Token |
 
 ### 📦 Categories
 
-| Method | Endpoint | Deskripsi | Auth |
+| Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/categories` | Mengambil semua kategori | 🔒 Bearer Token |
-| `POST` | `/categories` | Membuat kategori baru | 🔒 Bearer Token |
-| `PUT` | `/categories/:id` | Update kategori | 🔒 Bearer Token |
-| `DELETE` | `/categories/:id` | Hapus kategori | 🔒 Bearer Token |
+| `GET` | `/categories` | Fetch all categories | 🔒 Bearer Token |
+| `POST` | `/categories` | Create a new category | 🔒 Bearer Token |
+| `PUT` | `/categories/:id` | Update category details | 🔒 Bearer Token |
+| `DELETE` | `/categories/:id` | Delete a category | 🔒 Bearer Token |
 
 ### 🛍️ Products
 
-| Method | Endpoint | Deskripsi | Auth |
+| Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/products` | Mengambil semua produk (Bisa filter kategori) | 🔒 Bearer Token |
-| `POST` | `/products` | Tambah produk baru (Support upload gambar) | 🔒 Bearer Token |
-| `PUT` | `/products/:id` | Update data produk | 🔒 Bearer Token |
-| `DELETE` | `/products/:id` | Hapus produk | 🔒 Bearer Token |
+| `GET` | `/products` | Fetch all products (Supports filtering) | 🔒 Bearer Token |
+| `POST` | `/products` | Add a new product (With image upload) | 🔒 Bearer Token |
+| `PUT` | `/products/:id` | Update product information | 🔒 Bearer Token |
+| `DELETE` | `/products/:id` | Delete a product | 🔒 Bearer Token |
 
-### 🧾 Orders (Transaksi)
+### 🧾 Orders (Transactions)
 
-| Method | Endpoint | Deskripsi | Auth |
+| Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/orders` | Membuat transaksi baru (Checkout) | 🔒 Bearer Token |
-| `GET` | `/orders` | Melihat riwayat transaksi | 🔒 Bearer Token |
+| `POST` | `/orders` | Create a new transaction (Checkout) | 🔒 Bearer Token |
+| `GET` | `/orders` | View transaction history | 🔒 Bearer Token |
 
-### 📊 Reports (Laporan)
+### 📊 Reports
 
-| Method | Endpoint | Deskripsi | Auth |
+| Method | Endpoint | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/reports/dashboard` | Mendapatkan ringkasan penjualan/statistik | 🔒 Bearer Token |
+| `GET` | `/reports/dashboard` | Get sales summary and statistics | 🔒 Bearer Token |
 
 -----
 
-## 🧪 Struktur Project
+## 🧪 Project Structure
 
 ```text
 .
-├── prisma/                 # Schema database & Migrations
+├── prisma/                 # Database schema & Migrations
 ├── src/
-│   ├── config/             # Konfigurasi env & database
+│   ├── config/             # Environment & Database configuration
 │   ├── libs/               # Helper libraries (e.g., Cloudinary uploader)
-│   ├── middlewares/        # Auth check, validation, error handling
+│   ├── middlewares/        # Auth checks, validation, error handling
 │   ├── modules/            # Modular architecture (Controller, Service, Router)
 │   │   ├── auth/
 │   │   ├── categories/
@@ -157,8 +157,9 @@ Berikut adalah daftar endpoint yang tersedia berdasarkan struktur router di `src
 └── package.json
 ```
 
-## 📄 Lisensi
+## 📄 License
 
-Proyek ini bersifat open-source dan dapat digunakan untuk keperluan pembelajaran atau pengembangan lebih lanjut.
+This project is open-source and available for educational or further development purposes.
 
 Copyright © 2025 RapzzKY
+
